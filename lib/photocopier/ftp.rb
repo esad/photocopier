@@ -61,7 +61,11 @@ module Photocopier
       url = "ftp://"
       if options[:user].present?
         url << options[:user]
-        url << ":#{options[:password]}" if options[:password].present?
+        if options[:password].present?
+          # Note that the whole command is once more piped through escape gem which actually doesn't take care of &
+          escaped_password = options[:password].gsub('&',"\\\\&")
+          url << ":#{escaped_password}"
+        end
         url << "@"
       end
       url << options[:host]
